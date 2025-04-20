@@ -1,0 +1,152 @@
+Explanation of Scrollbox as ASCII Art
+
+(Substitute for some Whiteboard drawings.)
+
+I'm using >< to indicate string sections.
+
+We have a message we want to scroll, such as:
+
+    >Don't turn your back. Don't look away. And don't blink.<
+
+We don't want the message to run into itself, so we want to show all
+blanks at the start and end of the message.
+
+One way would be to have variables to keep track of leading blanks
+and trailing blanks, and increment/decrement those variables, and
+then offset where we start/end display of the message based on those
+variables.  That would be a huge pain.
+
+So instead, we just pad the message out with spaces at each end:
+
+   >         Don't turn your back. Don't look away. And don't blink.         <
+
+(This is another case where, if you get the data right, the code is easy.)
+
+We can only show 9 characters at a time, so what we want is to do this:
+
+Start:      |         |
+      then
+Step 1:     |        D|
+      then
+Step 2:     |       Do|
+
+and so on.
+
+A way to think about this is to imagine a viewport (shown with lower-case
+'v's and carets, '^') sliding down along the string:
+
+first:
+   vvvvvvvvv
+  >         Don't turn your back. Don't look away. And don't blink.         <
+   ^^^^^^^^^
+
+then
+    vvvvvvvvv
+  >         Don't turn your back. Don't look away. And don't blink.         <
+    ^^^^^^^^^
+
+then
+     vvvvvvvvv
+  >         Don't turn your back. Don't look away. And don't blink.         <
+     ^^^^^^^^^
+
+then
+      vvvvvvvvv
+  >         Don't turn your back. Don't look away. And don't blink.         <
+      ^^^^^^^^^
+
+and down to the end.  The viewport's position in the message changes,
+but we never change the text of the message itself.
+
+To repeat that: the scrollmessage itself never changes once we pad the
+spaces in.  What we end up with on subsequent calls of display_string()
+is:
+
+ startpos: 0
+ viewport: >         <
+ 
+ startpos: 1
+ viewport: >        D<
+ 
+ startpos: 2
+ viewport: >       Do<
+
+So we copy 9 characters into 'viewport', starting at 0 in the scrollmessage,
+and we increment our position in the scrollmessage each time, but we always
+return the address of viewport[0].
+
+
+
+SMOOTH SCROLLING:
+
+Right now, the box does block scrolling:
+
+Step N:
+    v       v
+    7654321076543210
+    ................
+    ..XXX......XX...
+    ..X  X....X  X..
+    ..X  X....X  X..
+    ..XXX......XX...
+    ...............
+    ^       ^
+Step N+1
+    v       v
+    76543210 76543210
+    ................
+    ...XX...........
+    ..X  X.........
+    ..X  X..........
+    ...XX...........
+    ................
+    ^       ^
+
+To do smooth scrolling, we want this:
+
+Step N:
+    v       v
+    7654321076543210
+    ................
+    ..XXX......XX...
+    ..X  X....X  X..
+    ..X  X....X  X..
+    ..XXX......XX...
+    ................
+    ^       ^
+Step N+1:
+    v       v
+    7654321076543210
+    ................
+    .XXX......XX....
+    .X  X....X  X...
+    .X  X....X  X...
+    .XXX......XX....
+    ................
+    ^       ^
+Step N+2:
+    v       v
+    7654321076543210
+    ................
+    XXX......XX.....
+    X  X....X  X....
+    X  X....X  X....
+    XXX......XX.....
+    ................
+    ^       ^
+Step N+3:
+    v       v
+    76543210 76543210
+    ................
+    XX......XX......
+      X....X  X.....
+      X....X  X.....
+    XX......XX......
+    ................
+    ^       ^
+
+Smooth scrolling requires getting two characters, and bitshifting them
+so that the right part of character N shares the same bytes as the left
+part of character N+1.  And on each step, the number of bits from the
+two characters changes in each byte.
+
