@@ -2,7 +2,6 @@
  *
  * D Provine, 20 Mar 2012
  *
- * $Id: $
  */
 
 const byte Char_64[10] = {
