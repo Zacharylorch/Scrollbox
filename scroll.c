@@ -1,6 +1,6 @@
 /* scroll.c -- scrolling display
  *
- * Darren Provine, 20 March 2012
+ * Zachary Lorch, Noel Abastillas, Tess Erickson, 24 April 2025
  *
  * Copyright (C) Darren Provine, 2011-2023, All Rights Reserved
  */
@@ -56,8 +56,38 @@ void process_key(keybits KeyCode)
         row = (KeyCode & 0x70) >> 4;
         col = (KeyCode & 0x0f);
 
-        if (row == 0 && col == 4) { // "off"
-            exit_scroll();
+        if (row == 0)
+        {
+            switch(col)
+            {
+                case 0: 
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    exit_scroll();
+                    break;
+            }
+        }
+        else if (row == 1)
+        {
+            switch(col)
+            {
+                case 0:
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    break;
+            }
         }
 
     } else { // keyboard press

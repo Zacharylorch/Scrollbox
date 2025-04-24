@@ -1,6 +1,6 @@
 /* model.c -- Data and Timing for the Scroll Box
  *
- * Darren Provine, 7 August 2011
+ * Zachary Lorch, Noel Abastillas, Tess Erickson, 24 April 2025
  *
  * Copyright (C) Darren Provine, 2011-2023, All Rights Reserved
  */
@@ -14,7 +14,9 @@ char scrollmessage[256];
 void setup(char *text)
 {
     snprintf(scrollmessage, 255, "         %s         ", text);
-    if (debug >= 2) {
+
+    if (debug >= 2) 
+    {
         fprintf(stderr, "text is: |%s|\r\n", scrollmessage);
         sleep(1);
     }
@@ -28,10 +30,16 @@ char *display_string()
 {
     static int startpos = 0; // initialization only happens once
 
+    if (startpos > strlen(scrollmessage) - 9)
+    {
+        startpos = 0;
+    }
+
     // copy 9 characters from scrollmessage
     strncpy(viewport, &(scrollmessage[startpos]), 9);
 
-    if (debug >= 4) {
+    if (debug >= 4) 
+    {
         fprintf(stderr, "viewport: |%s|\r\n", viewport);
         sleep(1);
     }

@@ -1,6 +1,6 @@
 /* view.c -- display for scrolling box
  *
- * Darren Provine, 20 March 2012
+ * Zachary Lorch, Noel Abastillas, Tess Erickson, 24 April 2025
  *
  * Copyright (C) Darren Provine, 2011-2023, All Rights Reserved
  */
@@ -8,6 +8,7 @@
 #include "scroll.h"
 #include "ctype.h"
 #include "Chars/All_Chars.h"
+#include "view.h"
 
 void show(char *text)
 {
