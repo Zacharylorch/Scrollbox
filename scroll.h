@@ -29,3 +29,5 @@ void show(char *);
 /* debug flag */
 
 extern int debug;
+
+#include "view.h"

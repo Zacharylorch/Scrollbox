@@ -10,6 +10,36 @@
 #include "Chars/All_Chars.h"
 #include "view.h"
 
+int view_props = 0x00;
+int toggle_checker = 0;
+
+void set_view_properties(int viewbits)
+{
+    view_props = viewbits;
+}
+
+int get_view_properties()
+{
+    return view_props;
+}
+
+void do_test(int flip)
+{
+    scroll_display *panel = get_panel();
+
+    for (int byte = 0; byte < 90; byte++)
+    {
+        if ((byte % 2 == 0 && !flip) || (byte % 2 != 0 && flip))
+        {
+            panel->set_byte(byte, 0xAA);
+        }
+        else
+        {
+            panel->set_byte(byte, 0x55);
+        }
+    }
+}
+
 void show(char *text)
 {
     int       position; // where in the string are we?
@@ -18,12 +48,21 @@ void show(char *text)
     int       c;        // what character are we doing?
     int       index;    // where is the character in the glyph[] array?
 
-    assert(strlen(text) == 9); // make sure we got enough chars
-
     panel = get_panel();
     assert(panel != NULL);     // probably should be an 'if'.
 
-    if (debug) {
+    if (view_props & TEST_MODE)
+    {
+        toggle_checker = !toggle_checker;
+        do_test(toggle_checker);
+        panel->update();
+        return;
+    }
+
+    assert(strlen(text) == 9); // make sure we got enough chars
+
+    if (debug) 
+    {
         fprintf(stderr, " text:|%s|", text);
         fflush(stderr);
     }

@@ -7,16 +7,18 @@
 
 #include <time.h>
 #include <stdio.h>
+#include <limits.h>
 
 // sleep needs this
 #include <unistd.h>
 
 #include "scroll.h"
+#include "view.h"
 
 // debug flag - changed via -D option
 int debug = 0;
 
-static char bugaddress[]="kilroy@elvis.rowan.edu";
+static char bugaddress[]="lorchz74@elvis.rowan.edu";
 
 // version -- say which version this is and exit
 // (note simple output; you could also print the rcsid too)
@@ -48,10 +50,18 @@ void exit_scroll()
     exit(0);
 }
 
+int test_mode_end = INT_MAX;
+
 // keyboard and mouse handling
 void process_key(keybits KeyCode)
 {
     int row, col;
+    int view_props;
+
+    const int DELAY_INTERVAL = 200;
+    const int DELAY_MIN      = 100;
+    const int DELAY_MAX      = 5000;
+
     if ( KeyCode & 0x80 ) { // mouse click
         row = (KeyCode & 0x70) >> 4;
         col = (KeyCode & 0x0f);
@@ -61,12 +71,26 @@ void process_key(keybits KeyCode)
             switch(col)
             {
                 case 0: 
+                    if (get_delay() - DELAY_INTERVAL > DELAY_MIN)
+                    {
+                        set_delay(get_delay() - DELAY_INTERVAL);
+                        start_timer();
+                    }
                     break;
                 case 1:
+                    if (get_delay() + DELAY_INTERVAL < DELAY_MAX)
+                    {
+                        set_delay(get_delay() + DELAY_INTERVAL);
+                        start_timer();
+                    }
                     break;
                 case 2:
                     break;
                 case 3:
+                    view_props = get_view_properties();
+                    view_props |= ( TEST_MODE );
+                    set_view_properties (view_props);
+                    test_mode_end = time(NULL) + 5;
                     break;
                 case 4:
                     exit_scroll();
@@ -105,9 +129,9 @@ int main(int argc, char *argv[])
 
     // note: C does automatic concatenation of long strings
     char  title[81] =
-               "------------------------------  "
-               "kilroy was here!"
-               "  ------------------------------";
+               "----------------------------"
+               "   Zach, Noel, Tess   "
+               "----------------------------";
 
     // loop through all the options; getopt() can handle together or apart
     while ( ( letter = getopt(argc, argv, "d:Dvh")) != -1 ) {
@@ -149,6 +173,15 @@ int main(int argc, char *argv[])
     set_delay(initial_delay);
     start_timer();
 
+    // for (int i = 0; i < 90; i++) {
+    //     panel->set_byte(i, 0xFF);
+    // }
+    // panel->update();
+
+    // while (1) {
+    //     panel->read_input();
+    // }
+
     // wait for the model to signal controller
     while ( 1 ) {
         panel->read_input();
@@ -166,15 +199,41 @@ int main(int argc, char *argv[])
 void tick(int sig)
 {
     char   *segment;
-
+    time_t now = time( NULL );
+    int view_props;
+    
     /* get the information from model about what chars to show
      * and how far over to slide them */
     segment = display_string();
     
-    if (debug >= 3) {
+    if (debug >= 3) 
+    {
         fprintf(stderr, "display_string() returned |%s|\r\n", segment);
         sleep(2);
     }
+
+    if ( now > test_mode_end ) 
+    {
+        // put in code to turn off DATE bit
+        // need to call get_view_props(), and then set_view_props()
+        view_props = get_view_properties();
+        view_props &= (~TEST_MODE);
+        set_view_properties(view_props);
+    }
+
+    if (get_view_properties() & TEST_MODE && time(NULL) >= test_mode_end)
+    {
+        int props = get_view_properties();
+        props &= ~TEST_MODE;
+        set_view_properties(props);
+    }
+
+    if (get_view_properties() & TEST_MODE)
+    {
+        show(NULL);  // triggers show() to run its TEST_MODE logic
+        return;             // don't continue to scroll
+    }
+
     /* Send those chars to the view. */
     show(segment);
 }

@@ -20,15 +20,22 @@ scroll.o: scroll.c /usr/include/stdc-predef.h /usr/include/time.h \
  /usr/include/bits/types/FILE.h /usr/include/bits/types/struct_FILE.h \
  /usr/include/bits/types/cookie_io_functions_t.h \
  /usr/include/bits/stdio_lim.h /usr/include/bits/floatn.h \
- /usr/include/bits/floatn-common.h /usr/include/unistd.h \
- /usr/include/bits/posix_opt.h /usr/include/bits/environments.h \
- /usr/include/bits/confname.h /usr/include/bits/getopt_posix.h \
- /usr/include/bits/getopt_core.h /usr/include/bits/unistd_ext.h scroll.h \
- /usr/include/sys/time.h /usr/include/bits/types/struct_timeval.h \
- /usr/include/sys/select.h /usr/include/bits/select.h \
- /usr/include/bits/types/sigset_t.h /usr/include/bits/types/__sigset_t.h \
- /usr/include/signal.h /usr/include/bits/signum-generic.h \
- /usr/include/bits/signum-arch.h /usr/include/bits/types/sig_atomic_t.h \
+ /usr/include/bits/floatn-common.h \
+ /usr/lib/gcc/x86_64-redhat-linux/14/include/limits.h \
+ /usr/lib/gcc/x86_64-redhat-linux/14/include/syslimits.h \
+ /usr/include/limits.h /usr/include/bits/posix1_lim.h \
+ /usr/include/bits/local_lim.h /usr/include/linux/limits.h \
+ /usr/include/bits/pthread_stack_min-dynamic.h \
+ /usr/include/bits/pthread_stack_min.h /usr/include/bits/posix2_lim.h \
+ /usr/include/unistd.h /usr/include/bits/posix_opt.h \
+ /usr/include/bits/environments.h /usr/include/bits/confname.h \
+ /usr/include/bits/getopt_posix.h /usr/include/bits/getopt_core.h \
+ /usr/include/bits/unistd_ext.h scroll.h /usr/include/sys/time.h \
+ /usr/include/bits/types/struct_timeval.h /usr/include/sys/select.h \
+ /usr/include/bits/select.h /usr/include/bits/types/sigset_t.h \
+ /usr/include/bits/types/__sigset_t.h /usr/include/signal.h \
+ /usr/include/bits/signum-generic.h /usr/include/bits/signum-arch.h \
+ /usr/include/bits/types/sig_atomic_t.h \
  /usr/include/bits/types/siginfo_t.h /usr/include/bits/types/__sigval_t.h \
  /usr/include/bits/siginfo-arch.h /usr/include/bits/siginfo-consts.h \
  /usr/include/bits/types/sigval_t.h /usr/include/bits/types/sigevent_t.h \
@@ -59,7 +66,7 @@ scroll.o: scroll.c /usr/include/stdc-predef.h /usr/include/time.h \
  /usr/include/bits/termios-c_iflag.h /usr/include/bits/termios-c_oflag.h \
  /usr/include/bits/termios-baud.h /usr/include/bits/termios-c_cflag.h \
  /usr/include/bits/termios-c_lflag.h /usr/include/bits/termios-tcflow.h \
- /usr/include/bits/termios-misc.h /usr/include/sys/ttydefaults.h
+ /usr/include/bits/termios-misc.h /usr/include/sys/ttydefaults.h view.h
 model.o: model.c /usr/include/stdc-predef.h scroll.h \
  /usr/include/sys/time.h /usr/include/features.h \
  /usr/include/features-time64.h /usr/include/bits/wordsize.h \
@@ -122,7 +129,7 @@ model.o: model.c /usr/include/stdc-predef.h scroll.h \
  /usr/include/bits/termios-c_iflag.h /usr/include/bits/termios-c_oflag.h \
  /usr/include/bits/termios-baud.h /usr/include/bits/termios-c_cflag.h \
  /usr/include/bits/termios-c_lflag.h /usr/include/bits/termios-tcflow.h \
- /usr/include/bits/termios-misc.h /usr/include/sys/ttydefaults.h
+ /usr/include/bits/termios-misc.h /usr/include/sys/ttydefaults.h view.h
 view.o: view.c /usr/include/stdc-predef.h scroll.h \
  /usr/include/sys/time.h /usr/include/features.h \
  /usr/include/features-time64.h /usr/include/bits/wordsize.h \
@@ -185,7 +192,7 @@ view.o: view.c /usr/include/stdc-predef.h scroll.h \
  /usr/include/bits/termios-c_iflag.h /usr/include/bits/termios-c_oflag.h \
  /usr/include/bits/termios-baud.h /usr/include/bits/termios-c_cflag.h \
  /usr/include/bits/termios-c_lflag.h /usr/include/bits/termios-tcflow.h \
- /usr/include/bits/termios-misc.h /usr/include/sys/ttydefaults.h \
+ /usr/include/bits/termios-misc.h /usr/include/sys/ttydefaults.h view.h \
  Chars/All_Chars.h Chars/Char_20.h Chars/Char_21.h Chars/Char_22.h \
  Chars/Char_23.h Chars/Char_24.h Chars/Char_25.h Chars/Char_26.h \
  Chars/Char_27.h Chars/Char_28.h Chars/Char_29.h Chars/Char_2A.h \

@@ -22,10 +22,10 @@ void setup(char *text)
     }
 }
 
-
 /* 'viewport' is declared outside the function, so the pointer will
  * still be valid when it's returned */
 char viewport[9];
+
 char *display_string()
 {
     static int startpos = 0; // initialization only happens once
@@ -44,7 +44,10 @@ char *display_string()
         sleep(1);
     }
 
-    startpos += 1;
+    if (!(get_view_properties() & TEST_MODE)) 
+    {
+        startpos += 1;
+    }
 
     return &viewport[0];
 }
