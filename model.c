@@ -22,36 +22,45 @@ void setup(char *text)
     }
 }
 
-static int startpos = 0;  // or pixel_offset if you're using fine scrolling
+static int pixel_offset = 0;
+static int start_char = 0;
 
-/* 'viewport' is declared outside the function, so the pointer will
- * still be valid when it's returned */
-char viewport[9];
+char viewport[11]; // 10 characters + 1 null terminator
 
 char *display_string()
 {
-    if (startpos > strlen(scrollmessage) - 9)
+    int len = strlen(scrollmessage);
+
+    if (pixel_offset >= 8)
     {
-        startpos = 0;
+        pixel_offset = 0;
+        start_char++;
+
+        if (start_char >= len - 9)
+        {
+            start_char = 0;
+        }
     }
 
-    // copy 9 characters from scrollmessage
-    strncpy(viewport, &(scrollmessage[startpos]), 9);
-
-    if (debug >= 4) 
+    // Build viewport character-by-character, wrapping around manually
+    for (int i = 0; i < 10; i++)
     {
-        fprintf(stderr, "viewport: |%s|\r\n", viewport);
-        sleep(1);
+        viewport[i] = scrollmessage[(start_char + i) % len];
+    }
+    viewport[10] = '\0'; // null terminate
+
+    if (!(get_view_properties() & TEST_MODE))
+    {
+        pixel_offset++;
     }
 
-    if (!(get_view_properties() & TEST_MODE)) 
-    {
-        startpos += 1;
-    }
-
-    return &viewport[0];
+    return viewport;
 }
 
+int get_pixel_offset()
+{
+    return pixel_offset;
+}
 
 // NOTE: delay is in milliseconds!
 int delay;

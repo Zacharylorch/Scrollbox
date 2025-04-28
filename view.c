@@ -64,14 +64,14 @@ char *make_timestring()
 
 void show(char *text)
 {
-    int       position; // where in the string are we?
-    int       line;     // which line are we on?
-    scroll_display *panel;    // where is the panel's memory?
-    int       c;        // what character are we doing?
-    int       index;    // where is the character in the glyph[] array?
+    int position; // character position 0 to 8
+    int line;     // line 0 to 9
+    scroll_display *panel;
+    int c1, c2;
+    int pixel_offset;
 
     panel = get_panel();
-    assert(panel != NULL);     // probably should be an 'if'.
+    assert(panel != NULL);
 
     if (view_props & TEST_MODE)
     {
@@ -81,48 +81,44 @@ void show(char *text)
         return;
     }
 
-    assert(strlen(text) == 9); // make sure we got enough chars
+    assert(strlen(text) == 10); // 9 visible + 1 lookahead
+
+    pixel_offset = get_pixel_offset(); // <--- get pixel shift
 
     if (debug) 
     {
-        fprintf(stderr, " text:|%s|", text);
+        fprintf(stderr, " text:|%s| pixel_offset:%d\n", text, pixel_offset);
         fflush(stderr);
     }
 
-    for (position = 0; position < 9; position ++ ) 
+    for (position = 0; position < 9; position++)
     {
+        char ch1 = text[position];
+        char ch2 = text[position + 1];
 
-        // Characters start at ' ', which is ASCII 0x20
-        // but is in the array at location 0.
-        c = (int) text[position];
+        // If outside text, assume space (' ')
+        if (!isprint(ch1)) ch1 = ' ';
+        if (!isprint(ch2)) ch2 = ' ';
 
-        // make sure the character is okay
-        if ( isprint(c) ) 
-        {
-            index = c - 0x20;
-        } 
-        else 
-        {
-            index = 'X'- 0x20;
-        }
+        c1 = ch1 - 0x20;
+        c2 = ch2 - 0x20;
 
-        if (debug) 
+        for (line = 0; line < 10; line++)
         {
-            fprintf(stderr, "-%c", c);
-            fflush(stderr);
-        }
+            byte left = (*glyph[c1])[line];
+            byte right = (*glyph[c2])[line];
 
-        for (line=0; line < 10; line++) 
-        {
-            panel->set_byte(position + line * 9, (*glyph[index])[line]);
+            byte merged = (left << pixel_offset) | (right >> (8 - pixel_offset));
+
+            panel->set_byte(position + line * 9, merged);
         }
     }
-    
+
     if (debug) 
     {
-        fprintf(stderr, "-\r");
+        fprintf(stderr, "-\n");
         fflush(stderr);
     }
+
     panel->update();
 }
-

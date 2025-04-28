@@ -61,7 +61,7 @@ void process_key(keybits KeyCode)
     int row, col;
     int view_props;
 
-    const int DELAY_INTERVAL = 200;
+    const int DELAY_INTERVAL = 100;
     const int DELAY_MIN      = 100;
     const int DELAY_MAX      = 5000;
 
@@ -92,7 +92,7 @@ void process_key(keybits KeyCode)
                     view_props |= ( TIME_MODE );
                     set_view_properties (view_props);
                     strncpy(saved_message, get_scrollmessage(), sizeof(saved_message));
-                    time_mode_end = time(NULL) + 5;
+                    time_mode_end = time(NULL) + 10;
                     break;
                 case 3:
                     view_props = get_view_properties();
@@ -131,7 +131,7 @@ void process_key(keybits KeyCode)
 
 int main(int argc, char *argv[])
 {
-    int            initial_delay = 1000;
+    int            initial_delay = 300;
     int            letter; // option char, if any
     scroll_display *panel;
 
@@ -191,8 +191,11 @@ int main(int argc, char *argv[])
     panel->set_title(title);
 
     // turn on some keys in row 2
-    panel->set_key(0, "foobar");
-    panel->set_key(1, "2nd");
+    panel->set_key(0, "snake");
+    panel->set_key(1, "up");
+    panel->set_key(2, "lang");
+    panel->set_key(3, "inverted");
+    panel->set_key(4, "foobar");
 
     // start the model running
     set_delay(initial_delay);

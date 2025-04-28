@@ -23,6 +23,7 @@ void setup(char *);
 char *display_string();
 
 char *get_scrollmessage(void);
+int get_pixel_offset();
 
 /* defined in "view.c" */
 void show(char *);
