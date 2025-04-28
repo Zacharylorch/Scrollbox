@@ -22,14 +22,14 @@ void setup(char *text)
     }
 }
 
+static int startpos = 0;  // or pixel_offset if you're using fine scrolling
+
 /* 'viewport' is declared outside the function, so the pointer will
  * still be valid when it's returned */
 char viewport[9];
 
 char *display_string()
 {
-    static int startpos = 0; // initialization only happens once
-
     if (startpos > strlen(scrollmessage) - 9)
     {
         startpos = 0;
@@ -64,6 +64,11 @@ int get_delay()
 void set_delay(int new_delay)
 {
     delay = new_delay;
+}
+
+char *get_scrollmessage()
+{
+    return scrollmessage;
 }
 
 /* Set up an interval timer for our scroll box.

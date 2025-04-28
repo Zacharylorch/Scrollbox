@@ -14,7 +14,7 @@
  *                       | | | |
  * spanish --------+     | | | |
  * inverted -----+ |     | | | |
- * x ----------+ | |     | | | |
+ * time -------+ | |     | | | |
  * x --------V V V V     V V V V
  *           0 0 0 0     0 0 0 0
  */
@@ -26,10 +26,13 @@
  #define  HORIZONTAL_MODE  0x08
  #define  SPANISH_MODE     0x10
  #define  INVERTED_MODE    0x20
- //#define                   0x40
- //#define                   0x80
+ #define  TIME_MODE        0x40
+ //#define                 0x80
  
  
  // set packed bits for what you want
  void set_view_properties( int );
  int get_view_properties( void );
+
+ char *make_timestring(void);
+

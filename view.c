@@ -40,6 +40,28 @@ void do_test(int flip)
     }
 }
 
+#define MAX_TIMESTR 9 // big enough for any valid data
+// make_timestring
+// returns a string formatted from the "dateinfo" object.
+char *make_timestring()
+{
+    time_t      now;
+    struct tm   *dateinfo;
+
+    /* get current time into "struct tm" object */
+    (void) time(&now);
+    dateinfo = localtime( &now );
+
+    char *timeformat = "(no format)"; // see strftime(3)
+
+    timeformat = "%l:%M:%S";
+
+    // make the timestring and return it
+    static char timestring[MAX_TIMESTR];
+    strftime(timestring, MAX_TIMESTR, timeformat, dateinfo);
+    return timestring;
+}
+
 void show(char *text)
 {
     int       position; // where in the string are we?
@@ -67,28 +89,37 @@ void show(char *text)
         fflush(stderr);
     }
 
-    for (position = 0; position < 9; position ++ ) {
+    for (position = 0; position < 9; position ++ ) 
+    {
 
         // Characters start at ' ', which is ASCII 0x20
         // but is in the array at location 0.
         c = (int) text[position];
 
         // make sure the character is okay
-        if ( isprint(c) ) {
+        if ( isprint(c) ) 
+        {
             index = c - 0x20;
-        } else {
+        } 
+        else 
+        {
             index = 'X'- 0x20;
         }
-        if (debug) {
+
+        if (debug) 
+        {
             fprintf(stderr, "-%c", c);
             fflush(stderr);
         }
 
-        for (line=0; line < 10; line++) {
+        for (line=0; line < 10; line++) 
+        {
             panel->set_byte(position + line * 9, (*glyph[index])[line]);
         }
     }
-    if (debug) {
+    
+    if (debug) 
+    {
         fprintf(stderr, "-\r");
         fflush(stderr);
     }

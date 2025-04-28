@@ -22,6 +22,8 @@ void start_timer();
 void setup(char *);
 char *display_string();
 
+char *get_scrollmessage(void);
+
 /* defined in "view.c" */
 void show(char *);
 

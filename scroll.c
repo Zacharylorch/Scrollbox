@@ -18,6 +18,8 @@
 // debug flag - changed via -D option
 int debug = 0;
 
+char saved_message[256];
+
 static char bugaddress[]="lorchz74@elvis.rowan.edu";
 
 // version -- say which version this is and exit
@@ -51,6 +53,7 @@ void exit_scroll()
 }
 
 int test_mode_end = INT_MAX;
+int time_mode_end = INT_MAX;
 
 // keyboard and mouse handling
 void process_key(keybits KeyCode)
@@ -85,6 +88,11 @@ void process_key(keybits KeyCode)
                     }
                     break;
                 case 2:
+                    view_props = get_view_properties();
+                    view_props |= ( TIME_MODE );
+                    set_view_properties (view_props);
+                    strncpy(saved_message, get_scrollmessage(), sizeof(saved_message));
+                    time_mode_end = time(NULL) + 5;
                     break;
                 case 3:
                     view_props = get_view_properties();
@@ -128,10 +136,27 @@ int main(int argc, char *argv[])
     scroll_display *panel;
 
     // note: C does automatic concatenation of long strings
-    char  title[81] =
+    char title[81] =
                "----------------------------"
                "   Zach, Noel, Tess   "
                "----------------------------";
+
+    
+    // if (get_view_properties() & TEST_MODE)
+    // {
+    //     title[81] =
+    //         "----------------------------"
+    //         "         Test         "
+    //         "----------------------------";
+    // }
+
+    // if (get_view_properties() & TIME_MODE)
+    // {
+    //     title[81] =
+    //         "----------------------------"
+    //         "         Time         "
+    //         "----------------------------";
+    // }
 
     // loop through all the options; getopt() can handle together or apart
     while ( ( letter = getopt(argc, argv, "d:Dvh")) != -1 ) {
@@ -200,11 +225,26 @@ void tick(int sig)
 {
     char   *segment;
     time_t now = time( NULL );
-    int view_props;
+    int view_props = get_view_properties();
     
     /* get the information from model about what chars to show
      * and how far over to slide them */
     segment = display_string();
+
+    static int last_time_mode = 0;
+
+    if ((view_props & TIME_MODE) && !last_time_mode)
+    {
+        strncpy(saved_message, get_scrollmessage(), sizeof(saved_message)); // Save original
+        setup(make_timestring());  // Set up the time text ONCE
+        last_time_mode = 1;
+    }
+
+    if (!(view_props & TIME_MODE) && last_time_mode)
+    {
+        setup(saved_message);      // Restore original text
+        last_time_mode = 0;
+    }
     
     if (debug >= 3) 
     {
@@ -214,18 +254,17 @@ void tick(int sig)
 
     if ( now > test_mode_end ) 
     {
-        // put in code to turn off DATE bit
-        // need to call get_view_props(), and then set_view_props()
         view_props = get_view_properties();
         view_props &= (~TEST_MODE);
         set_view_properties(view_props);
     }
 
-    if (get_view_properties() & TEST_MODE && time(NULL) >= test_mode_end)
+    if ( now > time_mode_end ) 
     {
-        int props = get_view_properties();
-        props &= ~TEST_MODE;
-        set_view_properties(props);
+        view_props = get_view_properties();
+        view_props &= (~TIME_MODE);
+        set_view_properties(view_props);
+        setup(saved_message);
     }
 
     if (get_view_properties() & TEST_MODE)
