@@ -24,6 +24,7 @@ char *display_string();
 
 char *get_scrollmessage(void);
 int get_pixel_offset();
+char *get_raw_message();
 
 /* defined in "view.c" */
 void show(char *);

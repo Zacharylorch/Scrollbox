@@ -9,11 +9,25 @@
 
 /* the message that we're scrolling */
 char scrollmessage[256];
+char raw_message[256];
+bool original_entered;
+
+static int pixel_offset = 0;
+static int start_char = 0;
 
 /* pad scrollmessage with 9 spaces left and right */
 void setup(char *text)
 {
-    snprintf(scrollmessage, 255, "         %s         ", text);
+    snprintf(scrollmessage, 255, "          %s          ", text);
+
+    if (!original_entered)
+    {
+        strncpy(raw_message, text, sizeof(raw_message));
+        original_entered = true;
+    }
+    
+    start_char = 0;
+    pixel_offset = 0;
 
     if (debug >= 2) 
     {
@@ -21,9 +35,6 @@ void setup(char *text)
         sleep(1);
     }
 }
-
-static int pixel_offset = 0;
-static int start_char = 0;
 
 char viewport[11]; // 10 characters + 1 null terminator
 
@@ -36,7 +47,7 @@ char *display_string()
         pixel_offset = 0;
         start_char++;
 
-        if (start_char >= len - 9)
+        if (start_char >= len - 10)
         {
             start_char = 0;
         }
@@ -47,6 +58,7 @@ char *display_string()
     {
         viewport[i] = scrollmessage[(start_char + i) % len];
     }
+
     viewport[10] = '\0'; // null terminate
 
     if (!(get_view_properties() & TEST_MODE))
@@ -78,6 +90,11 @@ void set_delay(int new_delay)
 char *get_scrollmessage()
 {
     return scrollmessage;
+}
+
+char *get_raw_message()
+{
+    return raw_message;
 }
 
 /* Set up an interval timer for our scroll box.

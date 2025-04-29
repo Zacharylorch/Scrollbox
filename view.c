@@ -40,7 +40,12 @@ void do_test(int flip)
     }
 }
 
-#define MAX_TIMESTR 9 // big enough for any valid data
+void up_down_mode(char *text)
+{
+    
+}
+
+#define MAX_TIMESTR 20 // big enough for any valid data
 // make_timestring
 // returns a string formatted from the "dateinfo" object.
 char *make_timestring()
@@ -54,7 +59,7 @@ char *make_timestring()
 
     char *timeformat = "(no format)"; // see strftime(3)
 
-    timeformat = "%l:%M:%S";
+    timeformat = "%l:%M:%S %P";
 
     // make the timestring and return it
     static char timestring[MAX_TIMESTR];
@@ -77,6 +82,13 @@ void show(char *text)
     {
         toggle_checker = !toggle_checker;
         do_test(toggle_checker);
+        panel->update();
+        return;
+    }
+
+    if ((view_props & UP_MODE) || (view_props & DOWN_MODE))
+    {
+        up_down_mode(text);
         panel->update();
         return;
     }
